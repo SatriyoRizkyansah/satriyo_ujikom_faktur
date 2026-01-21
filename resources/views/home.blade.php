@@ -46,5 +46,18 @@
             </ul>
             <a class="btn" href="{{ route('faktur.index') }}">Masuk</a>
         </article>
+
+        <article class="card">
+            <h3>Modul Laporan</h3>
+            <ul>
+                <li>Laporan stok & performa produk</li>
+                <li>Laporan penjualan lengkap dengan filter</li>
+                <li>Siap cetak langsung dari browser</li>
+            </ul>
+            <div class="card-actions">
+                <a class="btn" href="{{ route('laporan.produk') }}">Produk</a>
+                <a class="btn secondary" href="{{ route('laporan.penjualan') }}">Penjualan</a>
+            </div>
+        </article>
     </div>
 @endsection

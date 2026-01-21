@@ -189,6 +189,45 @@ body {
     flex-wrap: wrap;
 }
 
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: flex-end;
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    border: 1px solid var(--color-border);
+    background: #fff;
+}
+
+.filter-bar .form-group {
+    margin: 0;
+    min-width: 160px;
+}
+
+.filter-bar input[type="date"],
+.filter-bar input[type="text"],
+.filter-bar select {
+    min-width: 180px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.checkbox-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+}
+
+.is-disabled {
+    opacity: 0.5;
+}
+
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -207,6 +246,12 @@ body {
     display: block;
     font-size: 2rem;
     margin: 0.25rem 0;
+}
+
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .card-grid {
@@ -243,6 +288,15 @@ body {
     border: 1px solid var(--color-border);
     border-radius: 14px;
     overflow: hidden;
+}
+
+.table-card {
+    margin-top: 1.5rem;
+    border-radius: 18px;
+    border: 1px solid var(--color-border);
+    background: #fff;
+    padding: 0.5rem;
+    overflow-x: auto;
 }
 
 .data-table th,

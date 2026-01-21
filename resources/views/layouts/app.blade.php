@@ -32,6 +32,7 @@
                 <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">Customer</a>
                 <a href="{{ route('produk.index') }}" class="nav-link {{ request()->routeIs('produk.*') ? 'active' : '' }}">Produk</a>
                 <a href="{{ route('faktur.index') }}" class="nav-link {{ request()->routeIs('faktur.*') ? 'active' : '' }}">Penjualan</a>
+                <a href="{{ route('laporan.produk') }}" class="nav-link {{ request()->routeIs('laporan.*') ? 'active' : '' }}">Laporan</a>
             </nav>
         @endauth
 
@@ -65,6 +66,13 @@
                     <ul>
                         <li><a class="sidebar-link {{ request()->routeIs('faktur.index') ? 'active' : '' }}" href="{{ route('faktur.index') }}">Tampil Daftar Penjualan</a></li>
                         <li><a class="sidebar-link {{ request()->routeIs('faktur.create') ? 'active' : '' }}" href="{{ route('faktur.create') }}">Tambah Data Penjualan</a></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Modul Laporan</h2>
+                    <ul>
+                        <li><a class="sidebar-link {{ request()->routeIs('laporan.produk') ? 'active' : '' }}" href="{{ route('laporan.produk') }}">Laporan Produk</a></li>
+                        <li><a class="sidebar-link {{ request()->routeIs('laporan.penjualan') ? 'active' : '' }}" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a></li>
                     </ul>
                 </section>
             </aside>

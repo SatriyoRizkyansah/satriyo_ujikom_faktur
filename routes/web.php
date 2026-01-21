@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DetailFakturController;
 use App\Http\Controllers\FakturController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('customers', CustomerController::class)->except(['show']);
     Route::resource('produk', ProdukController::class)->except(['show']);
     Route::resource('faktur', FakturController::class);
+
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('produk', [LaporanController::class, 'produk'])->name('produk');
+        Route::get('penjualan', [LaporanController::class, 'penjualan'])->name('penjualan');
+    });
 
     Route::post('faktur/{faktur}/detail', [DetailFakturController::class, 'store'])->name('detail-faktur.store');
     Route::delete('faktur/{faktur}/detail/{produkId}', [DetailFakturController::class, 'destroy'])->name('detail-faktur.destroy');
