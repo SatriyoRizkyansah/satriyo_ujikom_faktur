@@ -5,7 +5,10 @@
 @section('content')
     <div class="content-header">
         <h2>Kelola Data Customer</h2>
-        <a class="btn" href="{{ route('customers.create') }}">Tambah Customer</a>
+        <div class="action-row">
+            <a class="btn ghost" href="{{ route('customers.export') }}" target="_blank" rel="noopener">Export PDF</a>
+            <a class="btn" href="{{ route('customers.create') }}">Tambah Customer</a>
+        </div>
     </div>
 
     <table class="data-table">

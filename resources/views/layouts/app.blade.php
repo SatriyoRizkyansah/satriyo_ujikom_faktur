@@ -30,6 +30,7 @@
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('perusahaan.index') }}" class="nav-link {{ request()->routeIs('perusahaan.*') ? 'active' : '' }}">Perusahaan</a>
                 <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">Customer</a>
+                <a href="{{ route('produk.index') }}" class="nav-link {{ request()->routeIs('produk.*') ? 'active' : '' }}">Produk</a>
                 <a href="{{ route('faktur.index') }}" class="nav-link {{ request()->routeIs('faktur.*') ? 'active' : '' }}">Penjualan</a>
             </nav>
         @endauth
@@ -49,6 +50,14 @@
                         <li><a class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}" href="{{ route('customers.index') }}">Tampil Daftar Customer</a></li>
                         <li><a class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}" href="{{ route('customers.create') }}">Tambah Data Customer</a></li>
                         <li><a class="sidebar-link {{ request()->routeIs('customers.preview') ? 'active' : '' }}" href="{{ route('customers.preview') }}">Preview / Cetak Data Customer</a></li>
+                        <li><a class="sidebar-link {{ request()->routeIs('customers.export') ? 'active' : '' }}" href="{{ route('customers.export') }}">Export PDF Customer</a></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Master Produk</h2>
+                    <ul>
+                        <li><a class="sidebar-link {{ request()->routeIs('produk.index') ? 'active' : '' }}" href="{{ route('produk.index') }}">Daftar Produk</a></li>
+                        <li><a class="sidebar-link {{ request()->routeIs('produk.create') ? 'active' : '' }}" href="{{ route('produk.create') }}">Tambah Produk</a></li>
                     </ul>
                 </section>
                 <section>
@@ -56,7 +65,6 @@
                     <ul>
                         <li><a class="sidebar-link {{ request()->routeIs('faktur.index') ? 'active' : '' }}" href="{{ route('faktur.index') }}">Tampil Daftar Penjualan</a></li>
                         <li><a class="sidebar-link {{ request()->routeIs('faktur.create') ? 'active' : '' }}" href="{{ route('faktur.create') }}">Tambah Data Penjualan</a></li>
-                        <li><a class="sidebar-link {{ request()->routeIs('produk.*') ? 'active' : '' }}" href="{{ route('produk.index') }}">Kelola Data Produk</a></li>
                     </ul>
                 </section>
             </aside>

@@ -28,6 +28,16 @@
         </article>
 
         <article class="card">
+            <h3>Kelola Data Produk</h3>
+            <ul>
+                <li>Tampil daftar produk</li>
+                <li>Tambah / ubah data produk</li>
+                <li>Atur stok dan harga</li>
+            </ul>
+            <a class="btn" href="{{ route('produk.index') }}">Masuk</a>
+        </article>
+
+        <article class="card">
             <h3>Kelola Data Penjualan</h3>
             <ul>
                 <li>Tampil daftar penjualan</li>

@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('perusahaan', PerusahaanController::class)->except(['show']);
     Route::get('customers/preview', [CustomerController::class, 'preview'])->name('customers.preview');
+    Route::get('customers/export/pdf', [CustomerController::class, 'exportPdf'])->name('customers.export');
     Route::resource('customers', CustomerController::class)->except(['show']);
     Route::resource('produk', ProdukController::class)->except(['show']);
     Route::resource('faktur', FakturController::class);

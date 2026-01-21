@@ -18,5 +18,8 @@
         @endforelse
     </div>
 
-    <button class="btn" onclick="window.print()">Cetak Halaman</button>
+    <div class="form-actions">
+        <button class="btn" onclick="window.print()">Cetak Halaman</button>
+        <a class="btn ghost" href="{{ route('customers.export') }}" target="_blank" rel="noopener">Export PDF</a>
+    </div>
 @endsection

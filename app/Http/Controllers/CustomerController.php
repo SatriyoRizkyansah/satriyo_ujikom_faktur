@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class CustomerController extends Controller
@@ -79,5 +81,19 @@ class CustomerController extends Controller
         $customers = Customer::orderBy('nama_customer')->get();
 
         return view('customers.preview', compact('customers'));
+    }
+
+    public function exportPdf(): Response
+    {
+        $customers = Customer::orderBy('nama_customer')->get();
+
+        $pdf = Pdf::loadView('customers.export', [
+            'customers' => $customers,
+            'exportedAt' => now()->format('d/m/Y H:i'),
+        ])->setPaper('a4', 'portrait');
+
+        $fileName = 'data-customer-' . now()->format('Ymd_His') . '.pdf';
+
+        return $pdf->stream($fileName, ['Attachment' => false]);
     }
 }
