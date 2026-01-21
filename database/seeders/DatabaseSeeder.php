@@ -37,11 +37,11 @@ class DatabaseSeeder extends Seeder
         );
 
         $perusahaan = Perusahaan::firstOrCreate([
-            'nama_perusahaan' => 'PT. Sukses Makmur',
+            'nama_perusahaan' => 'PT. AGS',
         ], [
-            'alamat' => 'Jl. Merpati No. 10, Jakarta',
-            'no_telp' => '021-5556677',
-            'fax' => '021-5556678',
+            'alamat' => 'Jl. Mercurua No. 11, Bandung',
+            'no_telp' => '021-9999213',
+            'fax' => '021-9999214',
         ]);
 
         $customer = Customer::firstOrCreate([

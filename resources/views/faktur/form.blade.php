@@ -24,7 +24,12 @@
     </div>
     <div class="form-group">
         <label>Metode Bayar</label>
-        <input type="text" name="metode_bayar" value="{{ old('metode_bayar', $existing?->metode_bayar ?? '') }}" required>
+        <select name="metode_bayar" required>
+            <option value="">-- Pilih Metode Bayar --</option>
+            <option value="Transfer" @selected(old('metode_bayar', $existing?->metode_bayar ?? '') == 'Transfer')>Transfer</option>
+            <option value="Cash" @selected(old('metode_bayar', $existing?->metode_bayar ?? '') == 'Cash')>Cash</option>
+            <option value="QRIS" @selected(old('metode_bayar', $existing?->metode_bayar ?? '') == 'QRIS')>QRIS</option>
+        </select>
     </div>
     <div class="form-group">
         <label>PPN (%)</label>

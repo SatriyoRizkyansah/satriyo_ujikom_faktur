@@ -9,7 +9,7 @@
         <div>
             <h2>Laporan Produk</h2>
             <p class="muted-text">Rekap stok, harga, dan performa penjualan tiap produk.</p>
-        </div>
+        </div>  
         <form method="GET" class="filter-bar">
             <div class="form-group">
                 <label for="from">Dari tanggal</label>

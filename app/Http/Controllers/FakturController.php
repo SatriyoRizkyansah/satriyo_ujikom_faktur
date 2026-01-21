@@ -10,6 +10,8 @@ use App\Models\Produk;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class FakturController extends Controller
@@ -27,7 +29,7 @@ class FakturController extends Controller
     public function index(): View
     {
         $faktur = Faktur::with(['customer', 'perusahaan'])
-            ->orderByDesc('tgl_faktur')
+            ->orderBy('no_faktur')
             ->get();
 
         return view('faktur.index', compact('faktur'));
@@ -54,17 +56,14 @@ class FakturController extends Controller
             return back()->withErrors('Minimal satu produk harus diisi pada detail faktur.')->withInput();
         }
 
-    $grandTotal = $this->calculateGrandTotal($details, $data['ppn'], $data['dp'] ?? 0);
+        $grandTotal = $this->calculateGrandTotal($details, $data['ppn'], $data['dp'] ?? 0);
 
-        $faktur = Faktur::create(array_merge($data, ['grand_total' => $grandTotal]));
+        DB::transaction(function () use ($details, $data, $grandTotal) {
+            $lockedProducts = $this->assertStockAvailability($details);
 
-        $details->each(function ($detail) use ($faktur) {
-            DetailFaktur::create([
-                'no_faktur' => $faktur->no_faktur,
-                'id_produk' => $detail['id_produk'],
-                'qty' => $detail['qty'],
-                'price' => $detail['price'],
-            ]);
+            $faktur = Faktur::create(array_merge($data, ['grand_total' => $grandTotal]));
+
+            $this->persistDetails($faktur, $details, $lockedProducts);
         });
 
         return redirect()->route('faktur.index')->with('status', 'Data penjualan berhasil dibuat.');
@@ -103,18 +102,18 @@ class FakturController extends Controller
             return back()->withErrors('Minimal satu produk harus diisi pada detail faktur.')->withInput();
         }
 
-    $grandTotal = $this->calculateGrandTotal($details, $data['ppn'], $data['dp'] ?? 0);
+        $grandTotal = $this->calculateGrandTotal($details, $data['ppn'], $data['dp'] ?? 0);
 
-        $faktur->update(array_merge($data, ['grand_total' => $grandTotal]));
+        DB::transaction(function () use ($faktur, $details, $data, $grandTotal) {
+            $existingDetails = $faktur->detailFaktur()->lockForUpdate()->get();
+            $this->returnStock($existingDetails);
+            $faktur->detailFaktur()->delete();
 
-        $faktur->detailFaktur()->delete();
-        $details->each(function ($detail) use ($faktur) {
-            DetailFaktur::create([
-                'no_faktur' => $faktur->no_faktur,
-                'id_produk' => $detail['id_produk'],
-                'qty' => $detail['qty'],
-                'price' => $detail['price'],
-            ]);
+            $lockedProducts = $this->assertStockAvailability($details);
+
+            $faktur->update(array_merge($data, ['grand_total' => $grandTotal]));
+
+            $this->persistDetails($faktur, $details, $lockedProducts);
         });
 
         return redirect()->route('faktur.index')->with('status', 'Data penjualan diperbarui.');
@@ -125,7 +124,14 @@ class FakturController extends Controller
      */
     public function destroy(Faktur $faktur): RedirectResponse
     {
-        $faktur->delete();
+        DB::transaction(function () use ($faktur) {
+            $lockedFaktur = Faktur::where('no_faktur', $faktur->no_faktur)->lockForUpdate()->firstOrFail();
+            $details = $lockedFaktur->detailFaktur()->lockForUpdate()->get();
+            $this->returnStock($details);
+            $lockedFaktur->detailFaktur()->delete();
+
+            $lockedFaktur->delete();
+        });
 
         return redirect()->route('faktur.index')->with('status', 'Data penjualan dihapus.');
     }
@@ -166,5 +172,80 @@ class FakturController extends Controller
         $grand = $subtotal + $ppnValue - ($dp ?? 0);
 
         return max($grand, 0);
+    }
+
+    private function assertStockAvailability(Collection $details): Collection
+    {
+        $grouped = $details->groupBy('id_produk')->map(fn ($items) => $items->sum('qty'));
+
+        if ($grouped->isEmpty()) {
+            return collect();
+        }
+
+        $products = Produk::whereIn('id_produk', $grouped->keys())
+            ->lockForUpdate()
+            ->get()
+            ->keyBy('id_produk');
+
+        foreach ($grouped as $productId => $requiredQty) {
+            $product = $products->get($productId);
+
+            if (!$product) {
+                throw ValidationException::withMessages([
+                    'detail' => 'Produk dengan ID ' . $productId . ' tidak ditemukan.',
+                ]);
+            }
+
+            if ($product->stock < $requiredQty) {
+                throw ValidationException::withMessages([
+                    'detail' => 'Stok produk "' . $product->nama_produk . '" tidak mencukupi. Sisa stok: ' . $product->stock,
+                ]);
+            }
+        }
+
+        return $products;
+    }
+
+    private function persistDetails(Faktur $faktur, Collection $details, ?Collection $lockedProducts = null): void
+    {
+        $details->each(function ($detail) use ($faktur, $lockedProducts) {
+            DetailFaktur::create([
+                'no_faktur' => $faktur->no_faktur,
+                'id_produk' => $detail['id_produk'],
+                'qty' => $detail['qty'],
+                'price' => $detail['price'],
+            ]);
+
+            $product = $lockedProducts?->get($detail['id_produk'])
+                ?? Produk::where('id_produk', $detail['id_produk'])->lockForUpdate()->first();
+
+            if ($product) {
+                $product->decrement('stock', $detail['qty']);
+                $product->stock -= $detail['qty'];
+            }
+        });
+    }
+
+    private function returnStock(Collection $details): void
+    {
+        if ($details->isEmpty()) {
+            return;
+        }
+
+        $grouped = $details->groupBy('id_produk')->map(fn ($items) => $items->sum('qty'));
+
+        $products = Produk::whereIn('id_produk', $grouped->keys())
+            ->lockForUpdate()
+            ->get()
+            ->keyBy('id_produk');
+
+        foreach ($grouped as $productId => $qty) {
+            $product = $products->get($productId);
+
+            if ($product) {
+                $product->increment('stock', $qty);
+                $product->stock += $qty;
+            }
+        }
     }
 }

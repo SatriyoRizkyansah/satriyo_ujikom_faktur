@@ -11,7 +11,6 @@
         $discount = $faktur->dp ?? 0;
         $grandTotal = $faktur->grand_total ?? ($subtotal + $ppnValue - $discount);
         $grandTotal = max($grandTotal, 0);
-        $companyInitial = strtoupper(mb_substr($perusahaan->nama_perusahaan, 0, 1));
     @endphp
 
     <div class="invoice-toolbar no-print">
@@ -26,12 +25,12 @@
         <article class="invoice-paper">
             <header class="invoice-header">
                 <div class="invoice-brand">
-                    <div class="invoice-logo">{{ $companyInitial }}</div>
+                    <div class="invoice-logo">S</div>
                     <div>
-                        <p class="company-name">{{ $perusahaan->nama_perusahaan }}</p>
+                        <p class="company-name">PT. Sukses Makmur</p>
                         <p class="company-meta">
-                            {{ $perusahaan->alamat }}<br>
-                            Telp. {{ $perusahaan->no_telp ?? '-' }}@if ($perusahaan->fax) | Fax {{ $perusahaan->fax }}@endif
+                            Jl. Merpati No. 10, Jakarta<br>
+                            Telp. 021-5556677 | Fax 021-5556678
                         </p>
                     </div>
                 </div>
@@ -47,6 +46,14 @@
                         <div>
                             <dt>Nama Pelanggan</dt>
                             <dd>{{ $customer->nama_customer }}</dd>
+                        </div>
+                        <div>
+                            <dt>Perusahaan Customer</dt>
+                            <dd>{{ $customer->perusahaan_cust ?? '-' }}</dd>
+                        </div>
+                        <div>
+                            <dt>Perusahaan Pengirim</dt>
+                            <dd>{{ $perusahaan->nama_perusahaan ?? 'PT. Sukses Makmur' }}</dd>
                         </div>
                         <div>
                             <dt>No. Telp</dt>

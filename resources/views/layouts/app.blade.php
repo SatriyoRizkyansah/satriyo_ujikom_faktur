@@ -10,8 +10,8 @@
     <div class="layout">
         <header class="header">
             <div class="brand-block">
-                <span class="brand-pill">Satriyo Rizkyansah FAKTUR UJIKOM</span>
-                <h1>Panel Pengelolaan Penjualan</h1>
+                <span class="brand-pill">PT. Sukses Makmur</span>
+                <h1>Dashboard Pengelolaan Penjualan</h1>
                 <p class="muted-text">Pengelolaan perusahaan, customer, dan penjualan dalam satu tempat.</p>
             </div>
             @auth
@@ -98,7 +98,7 @@
         </main>
 
         <footer class="footer">
-            <small>&copy; {{ date('Y') }} Sistem Faktur Penjualan. Semua hak cipta.</small>
+            <small>&copy; {{ date('Y') }} Sistem Faktur Penjualan, Satriyo Rizkyansah.</small>
         </footer>
     </div>
     @stack('scripts')

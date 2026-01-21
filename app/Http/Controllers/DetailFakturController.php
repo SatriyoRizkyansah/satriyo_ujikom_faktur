@@ -7,6 +7,8 @@ use App\Models\Faktur;
 use App\Models\Produk;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class DetailFakturController extends Controller
 {
@@ -32,16 +34,41 @@ class DetailFakturController extends Controller
             $data['price'] = Produk::find($data['id_produk'])->price ?? 0;
         }
 
-        DetailFaktur::updateOrCreate(
-            [
-                'no_faktur' => $faktur->no_faktur,
-                'id_produk' => $data['id_produk'],
-            ],
-            [
-                'qty' => $data['qty'],
-                'price' => $data['price'],
-            ]
-        );
+        DB::transaction(function () use ($data, $faktur) {
+            $produk = Produk::lockForUpdate()->findOrFail($data['id_produk']);
+
+            $detail = DetailFaktur::where('no_faktur', $faktur->no_faktur)
+                ->where('id_produk', $produk->id_produk)
+                ->lockForUpdate()
+                ->first();
+
+            $oldQty = $detail?->qty ?? 0;
+            $newQty = $data['qty'];
+            $diff = $newQty - $oldQty;
+
+            if ($diff > 0 && $produk->stock < $diff) {
+                throw ValidationException::withMessages([
+                    'qty' => 'Stok produk tidak mencukupi. Sisa stok: ' . $produk->stock,
+                ]);
+            }
+
+            DetailFaktur::updateOrCreate(
+                [
+                    'no_faktur' => $faktur->no_faktur,
+                    'id_produk' => $produk->id_produk,
+                ],
+                [
+                    'qty' => $newQty,
+                    'price' => $data['price'],
+                ]
+            );
+
+            if ($diff > 0) {
+                $produk->decrement('stock', $diff);
+            } elseif ($diff < 0) {
+                $produk->increment('stock', abs($diff));
+            }
+        });
 
         $this->syncGrandTotal($faktur);
 
@@ -53,9 +80,24 @@ class DetailFakturController extends Controller
      */
     public function destroy(Faktur $faktur, int $produkId): RedirectResponse
     {
-        DetailFaktur::where('no_faktur', $faktur->no_faktur)
-            ->where('id_produk', $produkId)
-            ->delete();
+        DB::transaction(function () use ($faktur, $produkId) {
+            $detail = DetailFaktur::where('no_faktur', $faktur->no_faktur)
+                ->where('id_produk', $produkId)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$detail) {
+                return;
+            }
+
+            $produk = Produk::lockForUpdate()->find($produkId);
+
+            if ($produk) {
+                $produk->increment('stock', $detail->qty);
+            }
+
+            $detail->delete();
+        });
 
         $this->syncGrandTotal($faktur);
 
