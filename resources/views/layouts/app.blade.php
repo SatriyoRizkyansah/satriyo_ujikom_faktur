@@ -10,7 +10,7 @@
     <div class="layout">
         <header class="header">
             <div class="brand-block">
-                <span class="brand-pill">FakturPro</span>
+                <span class="brand-pill">Satriyo Rizkyansah FAKTUR UJIKOM</span>
                 <h1>Panel Pengelolaan Penjualan</h1>
                 <p class="muted-text">Pengelolaan perusahaan, customer, dan penjualan dalam satu tempat.</p>
             </div>

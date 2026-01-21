@@ -28,6 +28,14 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $user2 = User::updateOrCreate(
+            ['email' => 'satriyorizkyansah@gmail.com'],
+            [
+                'name' => 'Satriyo Rizkyansah',
+                'password' => bcrypt('password'),
+            ]
+        );
+
         $perusahaan = Perusahaan::firstOrCreate([
             'nama_perusahaan' => 'PT. Sukses Makmur',
         ], [

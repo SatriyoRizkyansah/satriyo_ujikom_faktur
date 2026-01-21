@@ -10,6 +10,11 @@ use Illuminate\View\View;
 class ProdukController extends Controller
 {
     /**
+     * Controller ini megang katalog barang: nampilin stok, handle input harga dan jenis,
+     * serta update atau hapus produk kalau udah nggak dipakai. Alurnya sengaja dibuat
+     * sesederhana mungkin supaya tim admin tinggal fokus isi data tanpa mikirin teknis.
+     */
+    /**
      * Display a listing of the resource.
      */
     public function index(): View

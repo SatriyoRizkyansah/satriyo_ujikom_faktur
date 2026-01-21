@@ -10,6 +10,12 @@ use Illuminate\View\View;
 class PerusahaanController extends Controller
 {
     /**
+     * Fokus controller ini cuma satu: ngejamin data perusahaan induk tertata.
+     * Ada halaman daftar, form tambah/edit, validasi ringan, dan aksi hapus.
+     * Semua route diarahkan balik ke index lengkap dengan flash message supaya
+     * admin tau aksi terakhirnya berhasil.
+     */
+    /**
      * Display a listing of the resource.
      */
     public function index(): View

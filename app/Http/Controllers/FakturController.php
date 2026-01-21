@@ -15,6 +15,13 @@ use Illuminate\View\View;
 class FakturController extends Controller
 {
     /**
+     * Controller ini nge-manage seluruh siklus hidup faktur: dari list penjualan,
+     * form input yang sudah kebagi customer/perusahaan/produk, simpan data plus
+     * detail produknya, sampai preview dan edit ulang. Perhitungan subtotal, PPN,
+     * DP, dan grand total juga dirapel di sini biar data yang keluar ke view selalu
+     * rapi dan siap dicetak.
+     */
+    /**
      * Display a listing of the resource.
      */
     public function index(): View

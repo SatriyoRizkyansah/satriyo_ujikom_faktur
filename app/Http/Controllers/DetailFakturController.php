@@ -11,7 +11,14 @@ use Illuminate\Http\Request;
 class DetailFakturController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tugas controller ini simpel tapi krusial: nge-handle baris detail di faktur.
+     * Saat user tambah/edit produk, datanya langsung disimpan dan total faktur
+     * dihitung ulang. Kalau ada baris dihapus, grand total ikut disesuaikan supaya
+     * angka di layar sama dengan yang dicetak.
+     */
+    /**
+     * Simpan atau update satu baris detail faktur berdasarkan produk yang dipilih,
+     * otomatis isi harga default kalau user nggak input, lalu sinkronkan grand total.
      */
     public function store(Request $request, Faktur $faktur): RedirectResponse
     {
@@ -42,7 +49,7 @@ class DetailFakturController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Hapus baris detail berdasarkan produk tertentu dari faktur dan update totalnya.
      */
     public function destroy(Faktur $faktur, int $produkId): RedirectResponse
     {
@@ -55,6 +62,9 @@ class DetailFakturController extends Controller
         return back()->with('status', 'Detail faktur dihapus.');
     }
 
+    /**
+     * Hitung ulang subtotal, ppn, dan grand total, kemudian simpan ke model faktur.
+     */
     private function syncGrandTotal(Faktur $faktur): void
     {
         $subtotal = $faktur->detailFaktur()->get()->sum(fn ($detail) => $detail->qty * $detail->price);
