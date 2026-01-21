@@ -1,5 +1,18 @@
 @csrf
-@php($existing = $faktur ?? null)
+@php
+    $existing = $faktur ?? null;
+    $detailCollection = $existing?->detailFaktur ?? collect();
+
+    $detailProduk = old('id_produk', $detailCollection->pluck('id_produk')->toArray());
+    $detailQty = old('qty', $detailCollection->pluck('qty')->toArray());
+    $detailPrice = old('price', $detailCollection->pluck('price')->toArray());
+
+    if (empty($detailProduk) || !is_array($detailProduk)) {
+        $detailProduk = [null];
+        $detailQty = [1];
+        $detailPrice = [0];
+    }
+@endphp
 <div class="form-grid">
     <div class="form-group">
         <label>Tanggal Faktur</label>
@@ -52,12 +65,6 @@
 <h3>Detail Produk</h3>
 <p>Isi minimal satu produk untuk faktur.</p>
 
-@php
-    $detailProduk = old('id_produk', isset($faktur) ? $faktur->detailFaktur->pluck('id_produk')->toArray() : [null]);
-    $detailQty = old('qty', isset($faktur) ? $faktur->detailFaktur->pluck('qty')->toArray() : [1]);
-    $detailPrice = old('price', isset($faktur) ? $faktur->detailFaktur->pluck('price')->toArray() : [0]);
-@endphp
-
 <div class="detail-list" id="detail-list">
     @foreach ($detailProduk as $index => $produkId)
         <div class="detail-row">
@@ -80,14 +87,16 @@
                 <label>Harga Satuan</label>
                 <input type="number" step="0.01" min="0" name="price[]" value="{{ $detailPrice[$index] ?? 0 }}" required>
             </div>
-            <button type="button" class="btn secondary remove-row">Hapus</button>
+            <button type="button" class="btn ghost remove-row">Hapus</button>
         </div>
     @endforeach
 </div>
 
-<button type="button" class="btn" id="add-row">Tambah Baris Produk</button>
-
 <div class="form-actions">
+    <button type="button" class="btn ghost" id="add-row">Tambah Baris Produk</button>
+</div>
+
+<div class="form-actions align-end">
     <button class="btn" type="submit">Simpan</button>
     <a class="btn secondary" href="{{ route('faktur.index') }}">Batal</a>
 </div>
@@ -116,7 +125,7 @@
                     <label>Harga Satuan</label>
                     <input type="number" step="0.01" min="0" name="price[]" value="0" required>
                 </div>
-                <button type="button" class="btn secondary remove-row">Hapus</button>
+                <button type="button" class="btn ghost remove-row">Hapus</button>
             `;
             detailList.appendChild(template);
         });

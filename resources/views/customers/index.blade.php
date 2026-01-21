@@ -26,12 +26,16 @@
                     <td>{{ $customer->perusahaan_cust ?? '-' }}</td>
                     <td>{{ $customer->alamat }}</td>
                     <td>
-                        <a class="btn" href="{{ route('customers.edit', $customer) }}">Ubah</a>
-                        <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="inline-form">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn secondary" onclick="return confirm('Hapus data ini?')">Hapus</button>
-                        </form>
+                        <div class="table-actions compact">
+                            <div class="action-row">
+                                <a class="btn ghost" href="{{ route('customers.edit', $customer) }}">Ubah</a>
+                                <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="inline-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn danger" onclick="return confirm('Hapus data ini?')">Hapus</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             @empty

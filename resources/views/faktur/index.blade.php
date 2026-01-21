@@ -28,13 +28,17 @@
                     <td>{{ $item->perusahaan->nama_perusahaan }}</td>
                     <td>Rp {{ number_format($item->grand_total, 0, ',', '.') }}</td>
                     <td>
-                        <a class="btn" href="{{ route('faktur.show', $item) }}">Preview / Cetak</a>
-                        <a class="btn" href="{{ route('faktur.edit', $item) }}">Ubah</a>
-                        <form action="{{ route('faktur.destroy', $item) }}" method="POST" class="inline-form">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn secondary" onclick="return confirm('Hapus data penjualan ini?')">Hapus</button>
-                        </form>
+                        <div class="table-actions">
+                            <a class="btn block" href="{{ route('faktur.show', $item) }}">Preview / Cetak</a>
+                            <div class="action-row">
+                                <a class="btn ghost" href="{{ route('faktur.edit', $item) }}">Ubah</a>
+                                <form action="{{ route('faktur.destroy', $item) }}" method="POST" class="inline-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn danger" onclick="return confirm('Hapus data penjualan ini?')">Hapus</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             @empty

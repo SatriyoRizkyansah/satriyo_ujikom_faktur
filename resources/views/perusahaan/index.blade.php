@@ -28,12 +28,16 @@
                     <td>{{ $item->no_telp ?? '-' }}</td>
                     <td>{{ $item->fax ?? '-' }}</td>
                     <td>
-                        <a class="btn" href="{{ route('perusahaan.edit', $item) }}">Ubah</a>
-                        <form action="{{ route('perusahaan.destroy', $item) }}" method="POST" class="inline-form">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn secondary" onclick="return confirm('Hapus data ini?')">Hapus</button>
-                        </form>
+                        <div class="table-actions compact">
+                            <div class="action-row">
+                                <a class="btn ghost" href="{{ route('perusahaan.edit', $item) }}">Ubah</a>
+                                <form action="{{ route('perusahaan.destroy', $item) }}" method="POST" class="inline-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn danger" onclick="return confirm('Hapus data ini?')">Hapus</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             @empty

@@ -48,10 +48,10 @@
                     <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
                     <td>Rp {{ number_format($detail->qty * $detail->price, 0, ',', '.') }}</td>
                     <td>
-                        <form action="{{ route('detail-faktur.destroy', [$faktur, $detail->id_produk]) }}" method="POST">
+                        <form action="{{ route('detail-faktur.destroy', [$faktur, $detail->id_produk]) }}" method="POST" class="inline-form">
                             @csrf
                             @method('DELETE')
-                            <button class="btn secondary" onclick="return confirm('Hapus baris produk ini?')">Hapus</button>
+                            <button class="btn danger" onclick="return confirm('Hapus baris produk ini?')">Hapus</button>
                         </form>
                     </td>
                 </tr>
